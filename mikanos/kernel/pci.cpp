@@ -173,7 +173,7 @@ namespace {
   Error ConfigureMSIXRegister(const Device& dev, uint8_t cap_addr,
                              uint32_t msg_addr, uint32_t msg_data,
                              unsigned int num_vector_exponent) {
-    return MAKE_ERROR(Error::kNotImplementsd);
+    return MAKE_ERROR(Error::kNotImplemented);
   }
 }
 

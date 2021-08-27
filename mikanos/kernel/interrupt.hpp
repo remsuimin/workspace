@@ -4,7 +4,7 @@
  * 割り込み用のプログラムを集めたファイル。
  */
 
-#pragma once;
+#pragma once
 
 #include <array>
 #include <cstdint>
