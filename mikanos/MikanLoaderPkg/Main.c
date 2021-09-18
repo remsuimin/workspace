@@ -1,54 +1,52 @@
-#include <Uefi.h>
-#include <Library/UefiLib.h>
-#include <Library/UefiBootServicesTableLib.h>
-#include <Library/PrintLib.h>
-#include <Library/MemoryAllocationLib.h>
-#include <Library/BaseMemoryLib.h>
-#include <Protocol/LoadedImage.h>
-#include <Protocol/SimpleFileSystem.h>
-#include <Protocol/DiskIo2.h>
-#include <Protocol/BlockIo.h>
-#include <Guid/FileInfo.h>
-#include "frame_buffer_config.hpp"
-#include "memory_map.hpp"
-#include "elf.hpp"
-
-
+#include  <Uefi.h>
+#include  <Library/UefiLib.h>
+#include  <Library/UefiBootServicesTableLib.h>
+#include  <Library/PrintLib.h>
+#include  <Library/MemoryAllocationLib.h>
+#include  <Library/BaseMemoryLib.h>
+#include  <Protocol/LoadedImage.h>
+#include  <Protocol/SimpleFileSystem.h>
+#include  <Protocol/DiskIo2.h>
+#include  <Protocol/BlockIo.h>
+#include  <Guid/FileInfo.h>
+#include  "frame_buffer_config.hpp"
+#include  "memory_map.hpp"
+#include  "elf.hpp"
 
 EFI_STATUS GetMemoryMap(struct MemoryMap* map) {
-    if (map->buffer == NULL) {
-        return EFI_BUFFER_TOO_SMALL;
-    }
+  if (map->buffer == NULL) {
+    return EFI_BUFFER_TOO_SMALL;
+  }
 
-    map->map_size = map->buffer_size;
-    return gBS->GetMemoryMap(
-        &map->map_size,
-        (EFI_MEMORY_DESCRIPTOR*)map->buffer,
-        &map->map_key,
-        &map->descriptor_size,
-        &map->descriptor_version);
+  map->map_size = map->buffer_size;
+  return gBS->GetMemoryMap(
+      &map->map_size,
+      (EFI_MEMORY_DESCRIPTOR*)map->buffer,
+      &map->map_key,
+      &map->descriptor_size,
+      &map->descriptor_version);
 }
 
 const CHAR16* GetMemoryTypeUnicode(EFI_MEMORY_TYPE type) {
-    switch (type) {
-        case EfiReservedMemoryType: return L"EfiReservedMemoryType";
-        case EfiLoaderCode: return L"EfiLoaderCode";
-        case EfiLoaderData: return L"EfiLoaderData";
-        case EfiBootServicesCode: return L"EfiBootServicesCode";
-        case EfiBootServicesData: return L"EfiBootServicesData";
-        case EfiRuntimeServicesCode: return L"EfiRuntimeServicesCode";
-        case EfiRuntimeServicesData: return L"EfiRuntimeServicesData";
-        case EfiConventionalMemory: return L"EfiConventionalMemory";
-        case EfiUnusableMemory: return L"EfiUnusableMemory";
-        case EfiACPIReclaimMemory: return L"EfiACPIReclaimMemory";
-        case EfiACPIMemoryNVS: return L"EfiACPIMemoryNVS";
-        case EfiMemoryMappedIO: return L"EfiMemoryMappedIO";
-        case EfiMemoryMappedIOPortSpace: return L"EfiMemoryMappedIOPortSpace";
-        case EfiPalCode: return L"EfiPalCode";
-        case EfiPersistentMemory: return L"EfiPersistentMemory";
-        case EfiMaxMemoryType: return L"EfiMaxMemoryType";
-        default: return L"InvalidMemoryType";
-    }
+  switch (type) {
+    case EfiReservedMemoryType: return L"EfiReservedMemoryType";
+    case EfiLoaderCode: return L"EfiLoaderCode";
+    case EfiLoaderData: return L"EfiLoaderData";
+    case EfiBootServicesCode: return L"EfiBootServicesCode";
+    case EfiBootServicesData: return L"EfiBootServicesData";
+    case EfiRuntimeServicesCode: return L"EfiRuntimeServicesCode";
+    case EfiRuntimeServicesData: return L"EfiRuntimeServicesData";
+    case EfiConventionalMemory: return L"EfiConventionalMemory";
+    case EfiUnusableMemory: return L"EfiUnusableMemory";
+    case EfiACPIReclaimMemory: return L"EfiACPIReclaimMemory";
+    case EfiACPIMemoryNVS: return L"EfiACPIMemoryNVS";
+    case EfiMemoryMappedIO: return L"EfiMemoryMappedIO";
+    case EfiMemoryMappedIOPortSpace: return L"EfiMemoryMappedIOPortSpace";
+    case EfiPalCode: return L"EfiPalCode";
+    case EfiPersistentMemory: return L"EfiPersistentMemory";
+    case EfiMaxMemoryType: return L"EfiMaxMemoryType";
+    default: return L"InvalidMemoryType";
+  }
 }
 
 EFI_STATUS SaveMemoryMap(struct MemoryMap* map, EFI_FILE_PROTOCOL* file) {
@@ -90,32 +88,32 @@ EFI_STATUS SaveMemoryMap(struct MemoryMap* map, EFI_FILE_PROTOCOL* file) {
 
 EFI_STATUS OpenRootDir(EFI_HANDLE image_handle, EFI_FILE_PROTOCOL** root) {
   EFI_STATUS status;
-    EFI_LOADED_IMAGE_PROTOCOL* loaded_image;
-    EFI_SIMPLE_FILE_SYSTEM_PROTOCOL* fs;
+  EFI_LOADED_IMAGE_PROTOCOL* loaded_image;
+  EFI_SIMPLE_FILE_SYSTEM_PROTOCOL* fs;
 
-    status = gBS->OpenProtocol(
-        image_handle,
-        &gEfiLoadedImageProtocolGuid,
-        (VOID**)&loaded_image,
-        image_handle,
-        NULL,
-        EFI_OPEN_PROTOCOL_BY_HANDLE_PROTOCOL);
-    if (EFI_ERROR(status)) {
-      return status;
-    }
+  status = gBS->OpenProtocol(
+      image_handle,
+      &gEfiLoadedImageProtocolGuid,
+      (VOID**)&loaded_image,
+      image_handle,
+      NULL,
+      EFI_OPEN_PROTOCOL_BY_HANDLE_PROTOCOL);
+  if (EFI_ERROR(status)) {
+    return status;
+  }
 
-    status = gBS->OpenProtocol(
-        loaded_image->DeviceHandle,
-        &gEfiSimpleFileSystemProtocolGuid,
-        (VOID**)&fs,
-        image_handle,
-        NULL,
-        EFI_OPEN_PROTOCOL_BY_HANDLE_PROTOCOL);
-    if (EFI_ERROR(status)) {
-      return status;
-    }
+  status = gBS->OpenProtocol(
+      loaded_image->DeviceHandle,
+      &gEfiSimpleFileSystemProtocolGuid,
+      (VOID**)&fs,
+      image_handle,
+      NULL,
+      EFI_OPEN_PROTOCOL_BY_HANDLE_PROTOCOL);
+  if (EFI_ERROR(status)) {
+    return status;
+  }
 
-    return fs->OpenVolume(fs, root);
+  return fs->OpenVolume(fs, root);
 }
 
 EFI_STATUS OpenGOP(EFI_HANDLE image_handle,
@@ -151,20 +149,20 @@ EFI_STATUS OpenGOP(EFI_HANDLE image_handle,
 }
 
 const CHAR16* GetPixelFormatUnicode(EFI_GRAPHICS_PIXEL_FORMAT fmt) {
-    switch (fmt) {
-      case PixelRedGreenBlueReserved8BitPerColor:
-        return L"PixelRedGreenBlueReserved8BitPerColor";
-      case PixelBlueGreenRedReserved8BitPerColor:
-        return L"PixelBlueGreenRedReserved8BitPerColor";
-      case PixelBitMask:
-        return L"PixelBitMask";
-      case PixelBltOnly:
-        return L"PixelBltOnly";
-      case PixelFormatMax:
-        return L"PixelFormatMax";
-      default:
-        return L"InvalidPixelFormat";
-    }
+  switch (fmt) {
+    case PixelRedGreenBlueReserved8BitPerColor:
+      return L"PixelRedGreenBlueReserved8BitPerColor";
+    case PixelBlueGreenRedReserved8BitPerColor:
+      return L"PixelBlueGreenRedReserved8BitPerColor";
+    case PixelBitMask:
+      return L"PixelBitMask";
+    case PixelBltOnly:
+      return L"PixelBltOnly";
+    case PixelFormatMax:
+      return L"PixelFormatMax";
+    default:
+      return L"InvalidPixelFormat";
+  }
 }
 
 void Halt(void) {
@@ -200,7 +198,7 @@ EFI_STATUS EFIAPI UefiMain(
     EFI_SYSTEM_TABLE* system_table) {
   EFI_STATUS status;
 
-  Print(L"Hello, Mikan-chang World!\n");
+  Print(L"Hello, Mikan World!\n");
 
   CHAR8 memmap_buf[4096 * 4];
   struct MemoryMap memmap = {sizeof(memmap_buf), memmap_buf, 0, 0, 0, 0};
@@ -227,8 +225,8 @@ EFI_STATUS EFIAPI UefiMain(
   } else {
     status = SaveMemoryMap(&memmap, memmap_file);
     if (EFI_ERROR(status)) {
-    Print(L"failed to save memory map: %r\n", status);
-    Halt();
+      Print(L"failed to save memory map: %r\n", status);
+      Halt();
     }
     status = memmap_file->Close(memmap_file);
     if (EFI_ERROR(status)) {
@@ -255,8 +253,8 @@ EFI_STATUS EFIAPI UefiMain(
       gop->Mode->FrameBufferSize);
 
   UINT8* frame_buffer = (UINT8*)gop->Mode->FrameBufferBase;
-  for (UINTN i = 0; i < gop->Mode->FrameBufferSize; i++) {
-      frame_buffer[i] = 255;
+  for (UINTN i = 0; i < gop->Mode->FrameBufferSize; ++i) {
+    frame_buffer[i] = 255;
   }
 
   EFI_FILE_PROTOCOL* kernel_file;
@@ -297,7 +295,7 @@ EFI_STATUS EFIAPI UefiMain(
   UINT64 kernel_first_addr, kernel_last_addr;
   CalcLoadAddressRange(kernel_ehdr, &kernel_first_addr, &kernel_last_addr);
 
-  UINTN num_pages = (kernel_last_addr - kernel_first_addr + 0xfff)/ 0x1000;
+  UINTN num_pages = (kernel_last_addr - kernel_first_addr + 0xfff) / 0x1000;
   status = gBS->AllocatePages(AllocateAddress, EfiLoaderData,
                               num_pages, &kernel_first_addr);
   if (EFI_ERROR(status)) {

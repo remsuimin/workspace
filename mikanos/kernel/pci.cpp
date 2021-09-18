@@ -39,7 +39,7 @@ namespace {
   Error ScanBus(uint8_t bus);
 
   /** @brief 指定のファンクションを devices に追加する。
-   *  もし PCI-PCI ブリッジなら、セカンダリパスに対し ScanBus を実行する。
+   * もし PCI-PCI ブリッジなら、セカンダリパスに対し ScanBus を実行する。
    */
   Error ScanFunction(uint8_t bus, uint8_t device, uint8_t function) {
     auto class_code = ReadClassCode(bus, device, function);
@@ -60,7 +60,7 @@ namespace {
   }
 
   /** @brief 指定のデバイス番号の各ファンクションをスキャンする。
-   *  有効なファンクションを見つけたら ScanFunction を実行する。
+   * 有効なファンクションを見つけたら ScanFunction を実行する。
    */
   Error ScanDevice(uint8_t bus, uint8_t device) {
     if (auto err = ScanFunction(bus, device, 0)) {
@@ -82,7 +82,7 @@ namespace {
   }
 
   /** @brief 指定のバス番号の各デバイスをスキャンする。
-   *  有効なデバイスを見つけたら ScanDevice を実行する。
+   * 有効なデバイスを見つけたら ScanDevice を実行する。
    */
   Error ScanBus(uint8_t bus) {
     for (uint8_t device = 0; device < 32; ++device) {
@@ -211,7 +211,7 @@ namespace pci {
     ClassCode cc;
     cc.base       = (reg >> 24) & 0xffu;
     cc.sub        = (reg >> 16) & 0xffu;
-    cc.interface  = (reg >> 8) & 0xffu;
+    cc.interface  = (reg >> 8)  & 0xffu;
     return cc;    
   }
 

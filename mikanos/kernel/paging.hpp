@@ -14,7 +14,7 @@
  * 1 つのページディレクトリには 512 個の 2MiB ページを設定できるので、
  * kPageDirectoryCount x 1GiB の仮想アドレスがマッピングされることになる。
  */
-const size_t kPageDirecrotyCount = 64;
+const size_t kPageDirectoryCount = 64;
 
 /** @brief 仮想アドレス=物理アドレスとなるようにページテーブルを設定する。
  * 最終的に CR3 レジスタが正しく設定されたページテーブルを指すようになる。

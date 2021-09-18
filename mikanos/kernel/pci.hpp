@@ -28,7 +28,7 @@ namespace pci {
     /** @brief ベース、サブ、インターフェースが等しい場合に真を返す */
     bool Match(uint8_t b, uint8_t s, uint8_t i) {
       return Match(b, s) && i == interface;
-      }
+    }
   };
 
   /** @brief PCI デバイスを操作するための基礎データを格納する
@@ -117,7 +117,7 @@ namespace pci {
 
   /** @brief MSI ケーパビリティ構造
    *
-   * MSI ケーパビリティ構造は 64 ビットサポートの有無などで亜種がたくさんある。
+   * MSI ケーパビリティ構造は 64 ビットサポートの有無などで亜種が沢山ある。
    * この構造体は各亜種に対応するために最大の亜種に合わせてメンバを定義してある。
    */
   struct MSICapability {

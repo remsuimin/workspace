@@ -9,18 +9,7 @@
 #include <array>
 #include <cstdint>
 
-
-enum class DescriptorType {
-  kUpper8Bytes   = 0,
-  kLDT           = 2,
-  kTSSAvailable  = 9,
-  kTSSBusy       = 11,
-  kCallGate      = 12,
-  kInterruptGate = 14,
-  kTrapGate      = 15,
-};
-
-
+#include "x86_descriptor.hpp"
 
 union InterruptDescriptorAttribute {
   uint16_t data;
@@ -34,8 +23,6 @@ union InterruptDescriptorAttribute {
   } __attribute__((packed)) bits;
 } __attribute__((packed));
 
-
-
 struct InterruptDescriptor {
   uint16_t offset_low;
   uint16_t segment_selector;
@@ -45,9 +32,7 @@ struct InterruptDescriptor {
   uint32_t reserved;
 } __attribute__((packed));
 
-
 extern std::array<InterruptDescriptor, 256> idt;
-
 
 constexpr InterruptDescriptorAttribute MakeIDTAttr(
     DescriptorType type,
@@ -62,12 +47,10 @@ constexpr InterruptDescriptorAttribute MakeIDTAttr(
   return attr;
 }
 
-
 void SetIDTEntry(InterruptDescriptor& desc,
                  InterruptDescriptorAttribute attr,
                  uint64_t offset,
                  uint16_t segment_selector);
-
 
 class InterruptVector {
  public:
@@ -76,8 +59,6 @@ class InterruptVector {
   };
 };
 
-
-
 struct InterruptFrame {
   uint64_t rip;
   uint64_t cs;
@@ -85,6 +66,5 @@ struct InterruptFrame {
   uint64_t rsp;
   uint64_t ss;
 };
-
 
 void NotifyEndOfInterrupt();
