@@ -1,3 +1,3 @@
-# workspace
+# workspace_os_homebrewing
 
-ゼロからのOS自作入門のためのリポジトリです。
+This is a repository to OS homebrewing.
